@@ -1,4 +1,4 @@
-# merrittwan-cs3200 [![Build Status]https://travis-ci.org/omwan/merrittwan-cs3200.svg?branch=master)](https://travis-ci.org/omwan/merrittwan-cs3200)
+# merrittwan-cs3200 [![Build Status](https://travis-ci.org/omwan/merrittwan-cs3200.svg?branch=master)](https://travis-ci.org/omwan/merrittwan-cs3200)
 
 Final project for CS3200, Fall 2017.
 
