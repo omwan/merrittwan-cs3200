@@ -28,5 +28,4 @@ nbdist/
 Procfile
 
 ### sass ###
-src/main/webapp/css/.sass-cache
-*.css.map
+src/main/webapp/style/.sass-cache
