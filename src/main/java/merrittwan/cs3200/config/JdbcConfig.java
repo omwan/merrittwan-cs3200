@@ -9,6 +9,8 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import javax.sql.DataSource;
 
 /**
+ * Configuration for JDBC connection to MySQL database.
+ *
  * Created by olivi on 11/09/2017.
  */
 @Configuration

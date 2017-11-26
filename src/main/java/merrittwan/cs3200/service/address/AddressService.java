@@ -2,7 +2,7 @@ package merrittwan.cs3200.service.address;
 
 import java.util.List;
 
-import merrittwan.cs3200.repository.Address;
+import merrittwan.cs3200.entity.Address;
 
 /**
  * Created by olivi on 11/17/2017.

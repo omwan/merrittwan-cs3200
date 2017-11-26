@@ -1,9 +1,11 @@
-package merrittwan.cs3200.repository;
+package merrittwan.cs3200.rowmap;
 
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import merrittwan.cs3200.entity.Address;
 
 /**
  * Created by olivi on 11/15/2017.
