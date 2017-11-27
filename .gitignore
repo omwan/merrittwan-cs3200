@@ -29,3 +29,6 @@ Procfile
 
 ### sass ###
 src/main/webapp/style/.sass-cache
+
+### npm ###
+*.log
