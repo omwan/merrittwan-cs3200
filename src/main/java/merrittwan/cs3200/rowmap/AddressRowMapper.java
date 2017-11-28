@@ -19,7 +19,7 @@ public class AddressRowMapper implements RowMapper<Address> {
       address.setStreet(resultSet.getString("street"));
       address.setCity(resultSet.getString("city"));
       address.setState(resultSet.getString("state"));
-      address.setZip(resultSet.getInt("zip"));
+      address.setZip(resultSet.getString("zip"));
     } catch (SQLException e) {
       e.printStackTrace();
     }
