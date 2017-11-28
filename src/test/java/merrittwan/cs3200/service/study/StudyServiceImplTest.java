@@ -26,6 +26,7 @@ import mockit.Tested;
 import static org.junit.Assert.assertEquals;
 
 /**
+ * Class to test methods from service for studies.
  * Created by olivi on 11/28/2017.
  */
 public class StudyServiceImplTest {
@@ -47,6 +48,10 @@ public class StudyServiceImplTest {
     studyService = new StudyServiceImpl();
   }
 
+  /**
+   * Assert that adding a patient to study calls the appropriate jdbcTemplate methods,
+   * and that a commit is made.
+   */
   @Test
   public void testAddPatientToStudy() throws Exception {
     final Patient patient = createMockedPatient();
@@ -67,6 +72,9 @@ public class StudyServiceImplTest {
     studyService.addPatientToStudy(patient);
   }
 
+  /**
+   * Asserts that if an insert throws an exception, the transaction is rolled back.
+   */
   @Test
   public void testAddPatientToStudyInsertionError() throws Exception {
     final Patient patient = createMockedPatient();
@@ -92,6 +100,10 @@ public class StudyServiceImplTest {
     }
   }
 
+  /**
+   * Asserts that the resultset returned by the jdbcTemplate matches the resultset
+   * returned by the service.
+   */
   @Test
   public void testGetOutcomesByTreatmentType() throws Exception {
     final Map<String, Object> expected = new HashMap<>();
@@ -105,6 +117,9 @@ public class StudyServiceImplTest {
     assertEquals(actual, expected);
   }
 
+  /**
+   * Mock addressId helper.
+   */
   private MockUp<StudyServiceImpl> mockGetAddressId() {
     return new MockUp<StudyServiceImpl>() {
       @Mock
@@ -114,6 +129,11 @@ public class StudyServiceImplTest {
     };
   }
 
+  /**
+   * Create a mocked instance of a patient object.
+   *
+   * @return mocked patient object.
+   */
   private Patient createMockedPatient() {
     Patient patient = new Patient();
     patient.setFirstName("firstname");

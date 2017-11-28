@@ -23,6 +23,7 @@ import merrittwan.cs3200.entity.Address;
 import merrittwan.cs3200.entity.Patient;
 
 /**
+ * Implementation of service to perform operations on database relating to studies.
  * Created by olivi on 11/28/2017.
  */
 @Service
@@ -34,6 +35,11 @@ public class StudyServiceImpl implements StudyService {
   @Autowired
   private PlatformTransactionManager platformTransactionManager;
 
+  /**
+   * Add a given patient to their study. This service is a transaction.
+   *
+   * @param patient patient to add to study
+   */
   @Override
   public void addPatientToStudy(Patient patient) {
     DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
@@ -62,6 +68,13 @@ public class StudyServiceImpl implements StudyService {
     }
   }
 
+  /**
+   * Retrieve the patient outcomes for a study by the treatment type.
+   *
+   * @param studyId study to retrieve outcomes for
+   * @param placebo treatment type (either placebo or drug)
+   * @return resultset containing patient outcomes matching the given parameters.
+   */
   @Override
   public Map<String, Object> getOutcomesByTreatmentType(int studyId, boolean placebo) {
     CallableStatementCreator csc = con -> {
@@ -75,6 +88,13 @@ public class StudyServiceImpl implements StudyService {
             new SqlParameter(Types.TINYINT)));
   }
 
+  /**
+   * Helper method to update address table with a new address and return the generated
+   * primary key, if needed.
+   *
+   * @param address address to add to table.
+   * @return generated primary key for given address.
+   */
   private int getAddressId(Address address) {
     if (address.getAddressId() != null) {
       return address.getAddressId();
