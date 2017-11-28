@@ -1,11 +1,15 @@
-package merrittwan.cs3200.repository;
+package merrittwan.cs3200.entity;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
+ * Class to represent rows in ADDRESS table.
  * Created by olivi on 11/15/2017.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Address {
 
-  private int addressId;
+  private Integer addressId;
 
   private String street;
 
@@ -13,17 +17,17 @@ public class Address {
 
   private String state;
 
-  private int zip;
+  private String zip;
 
   public Address() {
 
   }
 
-  public int getAddressId() {
+  public Integer getAddressId() {
     return addressId;
   }
 
-  public void setAddressId(int addressId) {
+  public void setAddressId(Integer addressId) {
     this.addressId = addressId;
   }
 
@@ -51,11 +55,11 @@ public class Address {
     this.state = state;
   }
 
-  public int getZip() {
+  public String getZip() {
     return zip;
   }
 
-  public void setZip(int zip) {
+  public void setZip(String zip) {
     this.zip = zip;
   }
 }

@@ -9,14 +9,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
-import merrittwan.cs3200.repository.Address;
+import merrittwan.cs3200.entity.Address;
 import merrittwan.cs3200.service.address.AddressService;
 
 /**
  * Created by olivi on 11/15/2017.
  */
 @Controller
-@RequestMapping("/address")
+@RequestMapping("/api/address")
 public class AddressController {
 
   @Autowired

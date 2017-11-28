@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import merrittwan.cs3200.repository.Address;
-import merrittwan.cs3200.repository.AddressRowMapper;
+import merrittwan.cs3200.entity.Address;
+import merrittwan.cs3200.rowmap.AddressRowMapper;
 
 /**
  * Created by olivi on 11/15/2017.
