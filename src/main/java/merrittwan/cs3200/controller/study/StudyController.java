@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.Map;
 
 import merrittwan.cs3200.entity.Patient;
+import merrittwan.cs3200.entity.PrincipalInvestigator;
+import merrittwan.cs3200.entity.StudyClinician;
 import merrittwan.cs3200.service.study.StudyService;
 
 /**
@@ -35,6 +37,18 @@ public class StudyController {
     studyService.addPatientToStudy(patient);
   }
 
+  @RequestMapping(value = "/clinician", method = RequestMethod.POST)
+  @ResponseBody
+  public void addClinicianToStudy(@RequestBody StudyClinician studyClinician) {
+    studyService.addClinicianToStudy(studyClinician);
+  }
+
+  @RequestMapping(value = "/principalinvestigator", method = RequestMethod.POST)
+  @ResponseBody
+  public void addNewPrincipalInvestigator(@RequestBody PrincipalInvestigator pi) {
+    studyService.addPrincipalInvestigator(pi);
+  }
+
   /**
    * Retrieve the patient outcomes for a study by the treatment type.
    *
@@ -47,5 +61,11 @@ public class StudyController {
   public Map<String, Object> getOutcomesByTreatmentType(@RequestParam(name = "studyId") int studyId,
                                                         @RequestParam(name = "placebo") boolean placebo) {
     return studyService.getOutcomesByTreatmentType(studyId, placebo);
+  }
+
+  @RequestMapping(value = "/all", method = RequestMethod.GET)
+  @ResponseBody
+  public Map<String, Object> getAllStudies() {
+    return studyService.getAllStudies();
   }
 }

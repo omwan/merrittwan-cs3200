@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class StudyClinician {
 
-  private Study study;
+  private int studyId;
 
   private Clinician clinician;
 
@@ -17,12 +17,12 @@ public class StudyClinician {
 
   }
 
-  public Study getStudy() {
-    return study;
+  public int getStudyId() {
+    return studyId;
   }
 
-  public void setStudy(Study study) {
-    this.study = study;
+  public void setStudyId(int studyId) {
+    this.studyId = studyId;
   }
 
   public Clinician getClinician() {

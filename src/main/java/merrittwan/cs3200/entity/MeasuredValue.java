@@ -9,17 +9,13 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MeasuredValue {
 
-  private int measuredValueId;
+  private Integer measuredValueId;
 
   private String valueName;
 
   private String valueDescription;
 
   private String valueUnit;
-
-  private Patient patient;
-
-  private Clinician clinician;
 
   private int maxHealthyAmount;
 
@@ -29,11 +25,11 @@ public class MeasuredValue {
 
   }
 
-  public int getMeasuredValueId() {
+  public Integer getMeasuredValueId() {
     return measuredValueId;
   }
 
-  public void setMeasuredValueId(int measuredValueId) {
+  public void setMeasuredValueId(Integer measuredValueId) {
     this.measuredValueId = measuredValueId;
   }
 
@@ -59,22 +55,6 @@ public class MeasuredValue {
 
   public void setValueUnit(String valueUnit) {
     this.valueUnit = valueUnit;
-  }
-
-  public Patient getPatient() {
-    return patient;
-  }
-
-  public void setPatient(Patient patient) {
-    this.patient = patient;
-  }
-
-  public Clinician getClinician() {
-    return clinician;
-  }
-
-  public void setClinician(Clinician clinician) {
-    this.clinician = clinician;
   }
 
   public int getMaxHealthyAmount() {

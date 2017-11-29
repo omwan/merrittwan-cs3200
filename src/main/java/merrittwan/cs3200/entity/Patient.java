@@ -29,7 +29,7 @@ public class Patient {
 
   private String ethnicity;
 
-  private Study study;
+  private int studyId;
 
   private boolean placebo;
 
@@ -117,12 +117,12 @@ public class Patient {
     this.ethnicity = ethnicity;
   }
 
-  public Study getStudy() {
-    return study;
+  public int getStudyId() {
+    return studyId;
   }
 
-  public void setStudy(Study study) {
-    this.study = study;
+  public void setStudyId(int studyId) {
+    this.studyId = studyId;
   }
 
   public boolean isPlacebo() {
