@@ -12,6 +12,7 @@ import java.util.Map;
 
 import merrittwan.cs3200.entity.Patient;
 import merrittwan.cs3200.entity.PrincipalInvestigator;
+import merrittwan.cs3200.entity.Study;
 import merrittwan.cs3200.entity.StudyClinician;
 import merrittwan.cs3200.service.study.StudyService;
 
@@ -37,6 +38,12 @@ public class StudyController {
     studyService.addPatientToStudy(patient);
   }
 
+  @RequestMapping(value = "/patient", method = RequestMethod.PUT)
+  @ResponseBody
+  public void updatePatientInformation(@RequestBody Patient patient) {
+    studyService.updatePatientInfo(patient);
+  }
+
   @RequestMapping(value = "/clinician", method = RequestMethod.POST)
   @ResponseBody
   public void addClinicianToStudy(@RequestBody StudyClinician studyClinician) {
@@ -47,6 +54,12 @@ public class StudyController {
   @ResponseBody
   public void addNewPrincipalInvestigator(@RequestBody PrincipalInvestigator pi) {
     studyService.addPrincipalInvestigator(pi);
+  }
+
+  @RequestMapping(value = "/new", method = RequestMethod.POST)
+  @ResponseBody
+  public void createStudy(@RequestBody Study study) {
+    studyService.createStudy(study);
   }
 
   /**

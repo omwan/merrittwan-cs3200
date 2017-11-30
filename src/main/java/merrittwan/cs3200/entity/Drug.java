@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Drug {
 
-  private int drugId;
+  private Integer drugId;
 
   private String marketName;
 
@@ -23,11 +23,11 @@ public class Drug {
 
   }
 
-  public int getDrugId() {
+  public Integer getDrugId() {
     return drugId;
   }
 
-  public void setDrugId(int drugId) {
+  public void setDrugId(Integer drugId) {
     this.drugId = drugId;
   }
 

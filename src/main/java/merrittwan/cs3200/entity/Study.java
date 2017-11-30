@@ -29,11 +29,15 @@ public class Study {
 
   private MedicalCondition medicalCondition;
 
-  private Boolean completed;
+  private boolean completed;
 
-  private Boolean successful;
+  private SuccessStatus successful;
 
   private List<StudyDrug> drugs;
+
+  public enum SuccessStatus {
+    SUCCESSFUL, FAILED, IN_PROGRESS
+  }
 
   public Study() {
 
@@ -103,11 +107,11 @@ public class Study {
     this.completed = completed;
   }
 
-  public Boolean isSuccessful() {
+  public SuccessStatus getSuccessful() {
     return successful;
   }
 
-  public void setSuccessful(Boolean successful) {
+  public void setSuccessful(SuccessStatus successful) {
     this.successful = successful;
   }
 

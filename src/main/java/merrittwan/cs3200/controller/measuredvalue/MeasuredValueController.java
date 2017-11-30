@@ -1,4 +1,4 @@
-package merrittwan.cs3200.measuredvalue;
+package merrittwan.cs3200.controller.measuredvalue;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

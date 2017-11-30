@@ -4,6 +4,7 @@ import java.util.Map;
 
 import merrittwan.cs3200.entity.Patient;
 import merrittwan.cs3200.entity.PrincipalInvestigator;
+import merrittwan.cs3200.entity.Study;
 import merrittwan.cs3200.entity.StudyClinician;
 
 /**
@@ -19,9 +20,13 @@ public interface StudyService {
    */
   void addPatientToStudy(Patient patient);
 
+  void updatePatientInfo(Patient patient);
+
   void addClinicianToStudy(StudyClinician studyClinician);
 
   void addPrincipalInvestigator(PrincipalInvestigator pi);
+
+  void createStudy(Study study);
 
   /**
    * Retrieve the patient outcomes for a study by the treatment type.

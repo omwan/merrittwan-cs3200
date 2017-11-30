@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MedicalCondition {
 
-  private int conditionId;
+  private Integer conditionId;
 
   private String name;
 
@@ -19,11 +19,11 @@ public class MedicalCondition {
 
   }
 
-  public int getConditionId() {
+  public Integer getConditionId() {
     return conditionId;
   }
 
-  public void setConditionId(int conditionId) {
+  public void setConditionId(Integer conditionId) {
     this.conditionId = conditionId;
   }
 
