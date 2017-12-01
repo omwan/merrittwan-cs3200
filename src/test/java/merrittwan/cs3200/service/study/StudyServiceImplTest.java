@@ -63,7 +63,7 @@ public class StudyServiceImplTest {
 
       jdbcTemplate.update(anyString, patient.getFirstName(), patient.getLastName(), patient.getDob(),
               patient.getSex().toString(), patient.getHometown(), patient.getNationality(),
-              patient.getRace(), patient.getEthnicity(), patient.getStudy().getStudyId(), patient.isPlacebo(),
+              patient.getRace(), patient.getEthnicity(), patient.getStudyId(), patient.isPlacebo(),
               1, patient.isHealthy());
 
       platformTransactionManager.commit(transactionStatus);
@@ -87,7 +87,7 @@ public class StudyServiceImplTest {
 
       jdbcTemplate.update(anyString, patient.getFirstName(), patient.getLastName(), patient.getDob(),
               patient.getSex().toString(), patient.getHometown(), patient.getNationality(),
-              patient.getRace(), patient.getEthnicity(), patient.getStudy().getStudyId(), patient.isPlacebo(),
+              patient.getRace(), patient.getEthnicity(), patient.getStudyId(), patient.isPlacebo(),
               1, patient.isHealthy());
       result = e;
 
@@ -144,9 +144,7 @@ public class StudyServiceImplTest {
     patient.setNationality("nationality");
     patient.setRace("race");
     patient.setEthnicity("ethnicity");
-    Study study = new Study();
-    study.setStudyId(1);
-    patient.setStudy(study);
+    patient.setStudyId(1);
     patient.setPlacebo(true);
     Address address = new Address();
     patient.setAddress(address);

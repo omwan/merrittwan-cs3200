@@ -12,15 +12,13 @@ import java.sql.Date;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ClinicianPatientMeasuredValue {
 
-  private Patient patient;
+  private int patientId;
 
   private MeasuredValue measuredValue;
 
-  private Clinician clinician;
+  private int clinicianId;
 
-  private String value;
-
-  private String valueUnit;
+  private int valueMeasure;
 
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
   private Date date;
@@ -29,12 +27,12 @@ public class ClinicianPatientMeasuredValue {
 
   }
 
-  public Patient getPatient() {
-    return patient;
+  public int getPatientId() {
+    return patientId;
   }
 
-  public void setPatient(Patient patient) {
-    this.patient = patient;
+  public void setPatientId(int patientId) {
+    this.patientId = patientId;
   }
 
   public MeasuredValue getMeasuredValue() {
@@ -45,28 +43,20 @@ public class ClinicianPatientMeasuredValue {
     this.measuredValue = measuredValue;
   }
 
-  public Clinician getClinician() {
-    return clinician;
+  public int getClinicianId() {
+    return clinicianId;
   }
 
-  public void setClinician(Clinician clinician) {
-    this.clinician = clinician;
+  public void setClinicianId(int clinicianId) {
+    this.clinicianId = clinicianId;
   }
 
-  public String getValue() {
-    return value;
+  public int getValueMeasure() {
+    return valueMeasure;
   }
 
-  public void setValue(String value) {
-    this.value = value;
-  }
-
-  public String getValueUnit() {
-    return valueUnit;
-  }
-
-  public void setValueUnit(String valueUnit) {
-    this.valueUnit = valueUnit;
+  public void setValueMeasure(int valueMeasure) {
+    this.valueMeasure = valueMeasure;
   }
 
   public Date getDate() {

@@ -3,6 +3,9 @@ package merrittwan.cs3200.service.study;
 import java.util.Map;
 
 import merrittwan.cs3200.entity.Patient;
+import merrittwan.cs3200.entity.PrincipalInvestigator;
+import merrittwan.cs3200.entity.Study;
+import merrittwan.cs3200.entity.StudyClinician;
 
 /**
  * Service to perform operations on database relating to studies.
@@ -17,6 +20,14 @@ public interface StudyService {
    */
   void addPatientToStudy(Patient patient);
 
+  void updatePatientInfo(Patient patient);
+
+  void addClinicianToStudy(StudyClinician studyClinician);
+
+  void addPrincipalInvestigator(PrincipalInvestigator pi);
+
+  void createStudy(Study study);
+
   /**
    * Retrieve the patient outcomes for a study by the treatment type.
    *
@@ -25,5 +36,7 @@ public interface StudyService {
    * @return resultset containing patient outcomes matching the given parameters.
    */
   Map<String, Object> getOutcomesByTreatmentType(int studyId, boolean placebo);
+
+  Map<String, Object> getAllStudies();
 
 }

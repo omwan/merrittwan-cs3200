@@ -1,6 +1,7 @@
 package merrittwan.cs3200.service.study;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.CallableStatementCreator;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
@@ -14,13 +15,24 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import merrittwan.cs3200.entity.Address;
+import merrittwan.cs3200.entity.Clinician;
+import merrittwan.cs3200.entity.Drug;
+import merrittwan.cs3200.entity.Institution;
+import merrittwan.cs3200.entity.MedicalCondition;
 import merrittwan.cs3200.entity.Patient;
+import merrittwan.cs3200.entity.PrincipalInvestigator;
+import merrittwan.cs3200.entity.Study;
+import merrittwan.cs3200.entity.StudyClinician;
+import merrittwan.cs3200.entity.StudyDrug;
 
 /**
  * Implementation of service to perform operations on database relating to studies.
@@ -43,12 +55,12 @@ public class StudyServiceImpl implements StudyService {
   @Override
   public void addPatientToStudy(Patient patient) {
     DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
-    definition.setName("add patient and address");
+    definition.setName("add new patient to a study");
     definition.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
     TransactionStatus status = platformTransactionManager.getTransaction(definition);
 
     try {
-      int studyId = patient.getStudy().getStudyId();
+      int studyId = patient.getStudyId();
       int addressId = getAddressId(patient.getAddress());
 
       String sql = "INSERT INTO PATIENT (FIRST_NAME, LAST_NAME, DOB, SEX, HOMETOWN_CITY," +
@@ -66,6 +78,150 @@ public class StudyServiceImpl implements StudyService {
       platformTransactionManager.rollback(status);
       throw e;
     }
+  }
+
+  @Override
+  public void updatePatientInfo(Patient patient) {
+    DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
+    definition.setName("update patient information");
+    definition.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+    TransactionStatus status = platformTransactionManager.getTransaction(definition);
+
+    try {
+      int addressId = getAddressId(patient.getAddress());
+
+      String sql = "UPDATE PATIENT SET FIRST_NAME = ?, LAST_NAME = ?, DOB = ?, SEX = ?, " +
+              "HOMETOWN_CITY = ?, NATIONALITY = ?, RACE = ?, ETHNICITY = ?, ADDRESS_ID = ? " +
+              "WHERE PATIENT_ID = ?";
+
+      jdbcTemplate.update(sql, patient.getFirstName(), patient.getLastName(), patient.getDob(),
+              patient.getSex().toString(), patient.getHometown(), patient.getNationality(),
+              patient.getRace(), patient.getEthnicity(), addressId, patient.getPatientId());
+
+      platformTransactionManager.commit(status);
+    } catch (Exception e) {
+      e.printStackTrace();
+      platformTransactionManager.rollback(status);
+      throw e;
+    }
+  }
+
+  @Override
+  public void addClinicianToStudy(StudyClinician studyClinician) {
+    DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
+    definition.setName("add patient and address");
+    definition.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+    TransactionStatus status = platformTransactionManager.getTransaction(definition);
+
+    try {
+      Clinician clinician = studyClinician.getClinician();
+      int clinicianId = getClinicianId(clinician);
+      int studyId = studyClinician.getStudyId();
+
+      String sql = "INSERT INTO STUDY_has_CLINICIAN values (?, ?)";
+
+      jdbcTemplate.update(sql, studyId, clinicianId);
+
+      platformTransactionManager.commit(status);
+    } catch (Exception e) {
+      e.printStackTrace();
+      platformTransactionManager.rollback(status);
+      throw e;
+    }
+  }
+
+  @Override
+  public void addPrincipalInvestigator(PrincipalInvestigator pi) {
+    DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
+    definition.setName("add principal investigator");
+    definition.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+    TransactionStatus status = platformTransactionManager.getTransaction(definition);
+
+    try {
+      int addressId = getAddressId(pi.getAddress());
+      int institutionId = getInstitutionId(pi.getInstitution());
+
+      String sql = "INSERT INTO PRINCIPAL_INVESTIGATOR (FIRST_NAME, LAST_NAME, PHONE, EMAIL, " +
+              "ADDRESS_ID, INSTITUTION_ID) VALUES (?, ?, ?, ?, ?, ?)";
+
+      jdbcTemplate.update(sql, pi.getFirstName(), pi.getLastName(), pi.getPhone(),
+              pi.getEmail(), addressId, institutionId);
+
+      platformTransactionManager.commit(status);
+    } catch (Exception e) {
+      e.printStackTrace();
+      platformTransactionManager.rollback(status);
+      throw e;
+    }
+  }
+
+  @Override
+  public void createStudy(Study study) {
+    DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
+    definition.setName("create new study");
+    definition.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+    TransactionStatus status = platformTransactionManager.getTransaction(definition);
+
+    try {
+      int studyId = insertStudy(study);
+      List<StudyDrug> drugList = study.getDrugs();
+      insertDrugsIntoStudy(studyId, drugList);
+
+      platformTransactionManager.commit(status);
+    } catch (Exception e) {
+      e.printStackTrace();
+      platformTransactionManager.rollback(status);
+      throw e;
+    }
+  }
+
+  private int insertStudy(Study study) {
+    int conditionId = getConditionId(study.getMedicalCondition());
+    int principalInvestigatorId = study.getPrincipalInvestigator().getPrincipalInvestigatorId();
+    String insertIntoStudy = "INSERT INTO STUDY (TITLE, DESCRIPTION, START_DATE, END_DATE, " +
+            "PRINCIPAL_INVESTIGATOR_ID, CONDITION_CONDITION_ID, COMPLETED, SUCCESSFUL) " +
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
+    GeneratedKeyHolder holder = new GeneratedKeyHolder();
+    PreparedStatementCreator psc = con -> {
+      PreparedStatement ps = con.prepareStatement(insertIntoStudy, Statement.RETURN_GENERATED_KEYS);
+      ps.setString(1, study.getTitle());
+      ps.setString(2, study.getDescription());
+      ps.setDate(3, study.getStartDate());
+      ps.setDate(4, study.getEndDate());
+      ps.setInt(5, principalInvestigatorId);
+      ps.setInt(6, conditionId);
+      ps.setBoolean(7, study.isCompleted());
+      ps.setString(8, study.getSuccessful().toString());
+      return ps;
+    };
+
+    jdbcTemplate.update(psc, holder);
+
+    return holder.getKey().intValue();
+  }
+
+  private void insertDrugsIntoStudy(int studyId, List<StudyDrug> drugList) {
+    String insertIntoStudyDrug = "INSERT INTO STUDY_DRUG_DETAILS VALUES (?, ?, ?, ?, ?, ?)";
+
+    jdbcTemplate.batchUpdate(insertIntoStudyDrug, new BatchPreparedStatementSetter() {
+      @Override
+      public void setValues(PreparedStatement ps, int i) throws SQLException {
+        StudyDrug studyDrug = drugList.get(i);
+        int drugId = getDrugId(studyDrug.getDrug());
+        ps.setInt(1, drugId);
+        ps.setInt(2, studyId);
+        ps.setInt(3, studyDrug.getDosageAmount());
+        ps.setString(4, studyDrug.getDosageUnit());
+        ps.setInt(5, studyDrug.getTreatmentIntervalTime());
+        ps.setString(6, studyDrug.getTreatmentIntervalType().toString());
+      }
+
+      @Override
+      public int getBatchSize() {
+        return drugList.size();
+      }
+    });
   }
 
   /**
@@ -88,6 +244,12 @@ public class StudyServiceImpl implements StudyService {
             new SqlParameter(Types.TINYINT)));
   }
 
+  @Override
+  public Map<String, Object> getAllStudies() {
+    CallableStatementCreator csc = con -> con.prepareCall("{ call get_all_studies() }");
+    return jdbcTemplate.call(csc, new ArrayList<>());
+  }
+
   /**
    * Helper method to update address table with a new address and return the generated
    * primary key, if needed.
@@ -107,6 +269,84 @@ public class StudyServiceImpl implements StudyService {
         ps.setString(2, address.getCity());
         ps.setString(3, address.getState());
         ps.setString(4, address.getZip());
+        return ps;
+      };
+
+      jdbcTemplate.update(psc, holder);
+      return holder.getKey().intValue();
+    }
+  }
+
+  private int getInstitutionId(Institution institution) {
+    if (institution.getInstitutionId() != null) {
+      return institution.getInstitutionId();
+    } else {
+      int addressId = getAddressId(institution.getAddress());
+      String sql = "INSERT INTO INSTITUTION (INSTITUTION_NAME, INSTITUTION_TYPE, ADDRESS_ID) " +
+              "VALUES (?, ?, ?)";
+      GeneratedKeyHolder holder = new GeneratedKeyHolder();
+      PreparedStatementCreator psc = con -> {
+        PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+        ps.setString(1, institution.getName());
+        ps.setString(2, institution.getType().toString());
+        ps.setInt(3, addressId);
+        return ps;
+      };
+
+      jdbcTemplate.update(psc, holder);
+      return holder.getKey().intValue();
+    }
+  }
+
+  private int getClinicianId(Clinician clinician) {
+    if (clinician.getClinicianId() != null) {
+      return clinician.getClinicianId();
+    } else {
+      String sql = "INSERT INTO CLINICIAN (FIRST_NAME, LAST_NAME) VALUES (?, ?)";
+      GeneratedKeyHolder holder = new GeneratedKeyHolder();
+      PreparedStatementCreator psc = con -> {
+        PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+        ps.setString(1, clinician.getFirstName());
+        ps.setString(2, clinician.getLastName());
+        return ps;
+      };
+
+      jdbcTemplate.update(psc, holder);
+      return holder.getKey().intValue();
+    }
+  }
+
+  private int getConditionId(MedicalCondition condition) {
+    if (condition.getConditionId() != null) {
+      return condition.getConditionId();
+    } else {
+      String sql = "INSERT INTO MEDICAL_CONDITION (NAME, DESCRIPTION) VALUES (?, ?)";
+      GeneratedKeyHolder holder = new GeneratedKeyHolder();
+      PreparedStatementCreator psc = con -> {
+        PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+        ps.setString(1, condition.getName());
+        ps.setString(2, condition.getDescription());
+        return ps;
+      };
+
+      jdbcTemplate.update(psc, holder);
+      return holder.getKey().intValue();
+    }
+  }
+
+  private int getDrugId(Drug drug) {
+    if (drug.getDrugId() != null) {
+      return drug.getDrugId();
+    } else {
+      String sql = "INSERT INTO DRUG (MARKET_NAME, SCIENTIFIC_NAME, TOXICITY, PREVIOUS_SUCCESS) " +
+              "VALUES (?, ?, ?, ?)";
+      GeneratedKeyHolder holder = new GeneratedKeyHolder();
+      PreparedStatementCreator psc = con -> {
+        PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+        ps.setString(1, drug.getMarketName());
+        ps.setString(2, drug.getScientificName());
+        ps.setString(3, drug.getToxicity());
+        ps.setInt(4, drug.getPreviousSuccess());
         return ps;
       };
 

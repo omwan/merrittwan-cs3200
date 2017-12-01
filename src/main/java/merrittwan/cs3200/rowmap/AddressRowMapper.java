@@ -8,18 +8,26 @@ import java.sql.SQLException;
 import merrittwan.cs3200.entity.Address;
 
 /**
+ * RowMapper for ADDRESS table.
  * Created by olivi on 11/15/2017.
  */
 public class AddressRowMapper implements RowMapper<Address> {
 
-  public Address mapRow(ResultSet resultSet, int i) {
+  /**
+   * Map a ResultSet to an Address POJO.
+   *
+   * @param rs query results
+   * @param rowNum       row number
+   * @return Address object with fields filled in from query results.
+   */
+  public Address mapRow(ResultSet rs, int rowNum) {
     Address address = new Address();
     try {
-      address.setAddressId(resultSet.getInt("address_id"));
-      address.setStreet(resultSet.getString("street"));
-      address.setCity(resultSet.getString("city"));
-      address.setState(resultSet.getString("state"));
-      address.setZip(resultSet.getString("zip"));
+      address.setAddressId(rs.getInt("address_id"));
+      address.setStreet(rs.getString("street"));
+      address.setCity(rs.getString("city"));
+      address.setState(rs.getString("state"));
+      address.setZip(rs.getString("zip"));
     } catch (SQLException e) {
       e.printStackTrace();
     }
