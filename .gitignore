@@ -32,3 +32,4 @@ src/main/webapp/style/.sass-cache
 
 ### npm ###
 *.log
+src/main/webapp/node_modules
