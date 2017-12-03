@@ -175,6 +175,12 @@ public class StudyServiceImpl implements StudyService {
     }
   }
 
+  @Override
+  public void closeStudy(int studyId) {
+    String sql = "UPDATE STUDY SET COMPLETED = TRUE WHERE STUDY_ID = ?";
+    jdbcTemplate.update(sql, studyId);
+  }
+
   private int insertStudy(Study study) {
     int conditionId = getConditionId(study.getMedicalCondition());
     int principalInvestigatorId = study.getPrincipalInvestigator().getPrincipalInvestigatorId();

@@ -62,6 +62,12 @@ public class StudyController {
     studyService.createStudy(study);
   }
 
+  @RequestMapping(value = "/new", method = RequestMethod.PUT)
+  @ResponseBody
+  public void closeStudy(@RequestBody int studyId) {
+    studyService.closeStudy(studyId);
+  }
+
   /**
    * Retrieve the patient outcomes for a study by the treatment type.
    *
