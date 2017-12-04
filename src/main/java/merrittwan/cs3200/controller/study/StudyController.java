@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.List;
 import java.util.Map;
 
 import merrittwan.cs3200.entity.Patient;
@@ -80,6 +81,13 @@ public class StudyController {
   public Map<String, Object> getOutcomesByTreatmentType(@RequestParam(name = "studyId") int studyId,
                                                         @RequestParam(name = "placebo") boolean placebo) {
     return studyService.getOutcomesByTreatmentType(studyId, placebo);
+  }
+
+  @RequestMapping(value = "/characteristics", method = RequestMethod.POST)
+  @ResponseBody
+  public List<Patient> getOutcomesByPatientCharacteristics(@RequestParam(name = "studyId") int studyId,
+                                                           @RequestBody Map<String, Object> characteristics) {
+    return studyService.getOutcomesByPatientCharacteristics(studyId, characteristics);
   }
 
   @RequestMapping(value = "/all", method = RequestMethod.GET)

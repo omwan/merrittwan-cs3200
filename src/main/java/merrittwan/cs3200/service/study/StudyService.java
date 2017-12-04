@@ -1,5 +1,6 @@
 package merrittwan.cs3200.service.study;
 
+import java.util.List;
 import java.util.Map;
 
 import merrittwan.cs3200.entity.Patient;
@@ -38,6 +39,9 @@ public interface StudyService {
    * @return resultset containing patient outcomes matching the given parameters.
    */
   Map<String, Object> getOutcomesByTreatmentType(int studyId, boolean placebo);
+
+  List<Patient> getOutcomesByPatientCharacteristics(int studyId,
+                                                    Map<String, Object> characteristics);
 
   Map<String, Object> getAllStudies();
 

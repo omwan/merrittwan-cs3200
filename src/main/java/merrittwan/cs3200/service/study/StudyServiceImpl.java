@@ -5,6 +5,8 @@ import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.CallableStatementCreator;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.RowMapperResultSetExtractor;
 import org.springframework.jdbc.core.SqlParameter;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Service;
@@ -33,6 +35,7 @@ import merrittwan.cs3200.entity.PrincipalInvestigator;
 import merrittwan.cs3200.entity.Study;
 import merrittwan.cs3200.entity.StudyClinician;
 import merrittwan.cs3200.entity.StudyDrug;
+import merrittwan.cs3200.rowmap.PatientRowMapper;
 
 /**
  * Implementation of service to perform operations on database relating to studies.
@@ -248,6 +251,37 @@ public class StudyServiceImpl implements StudyService {
 
     return jdbcTemplate.call(csc, Arrays.asList(new SqlParameter(Types.INTEGER),
             new SqlParameter(Types.TINYINT)));
+  }
+
+  @Override
+  public List<Patient> getOutcomesByPatientCharacteristics(int studyId,
+                                                           Map<String, Object> characteristics) {
+    String sql = "SELECT * FROM PATIENT JOIN ADDRESS ON PATIENT.ADDRESS_ID = ADDRESS.ADDRESS_ID" +
+            " WHERE STUDY_ID = ?";
+
+    for (String s : characteristics.keySet()) {
+      if (characteristics.get(s) != null) {
+        sql += " AND " + s + " = ?";
+      }
+    }
+
+    String finalSql = sql;
+    PreparedStatementCreator psc = con -> {
+      PreparedStatement ps = con.prepareStatement(finalSql);
+      ps.setInt(1, studyId);
+
+      List<String> keys = new ArrayList<>(characteristics.keySet());
+      for (int i = 0; i < characteristics.keySet().size(); i++) {
+        ps.setObject(i + 2, characteristics.get(keys.get(i)));
+      }
+
+      return ps;
+    };
+
+    RowMapper<Patient> rm = new PatientRowMapper();
+    RowMapperResultSetExtractor<Patient> rs =  new RowMapperResultSetExtractor<>(rm);
+
+    return jdbcTemplate.query(psc, rs);
   }
 
   @Override
