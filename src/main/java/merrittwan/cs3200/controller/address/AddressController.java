@@ -13,6 +13,7 @@ import merrittwan.cs3200.service.address.AddressService;
  * Created by olivi on 11/15/2017.
  */
 @Controller
+@CrossOrigin
 @RequestMapping("/api/address")
 public class AddressController {
 
