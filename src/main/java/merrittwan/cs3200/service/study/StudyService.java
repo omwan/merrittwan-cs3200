@@ -28,6 +28,8 @@ public interface StudyService {
 
   void createStudy(Study study);
 
+  void closeStudy(int studyId);
+
   /**
    * Retrieve the patient outcomes for a study by the treatment type.
    *
