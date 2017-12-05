@@ -21,6 +21,7 @@ import merrittwan.cs3200.entity.MeasuredValue;
 import merrittwan.cs3200.rowmap.ClinicianPatientMeasuredValueRowMapper;
 
 /**
+ * Service to manage data in MEASURED_VALUE table.
  * Created by olivi on 11/28/2017.
  */
 @Service
@@ -32,6 +33,11 @@ public class MeasuredValueServiceImpl implements MeasuredValueService {
   @Autowired
   private PlatformTransactionManager platformTransactionManager;
 
+  /**
+   * Record a measured value for a patient by a clinician.
+   *
+   * @param recordedValue values to insert on table
+   */
   @Override
   public void recordMeasuredValue(ClinicianPatientMeasuredValue recordedValue) {
 
@@ -58,6 +64,12 @@ public class MeasuredValueServiceImpl implements MeasuredValueService {
     }
   }
 
+  /**
+   * Get all recorded values for a given patient.
+   *
+   * @param patientId primary key of patient to query on
+   * @return list of recorded values for the given patient
+   */
   @Override
   public List<ClinicianPatientMeasuredValue> getRecordedValuesForPatient(int patientId) {
     RowMapper<ClinicianPatientMeasuredValue> rm = new ClinicianPatientMeasuredValueRowMapper();

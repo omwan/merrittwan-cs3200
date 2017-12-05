@@ -16,6 +16,7 @@ import mockit.Tested;
 import static org.junit.Assert.*;
 
 /**
+ * Class to test methods from service for medical conditions.
  * Created by olivi on 11/28/2017.
  */
 public class MedicalConditionServiceImplTest {

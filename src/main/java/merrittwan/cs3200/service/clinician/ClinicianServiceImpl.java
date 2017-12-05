@@ -14,6 +14,7 @@ import merrittwan.cs3200.rowmap.ClinicianRowMapper;
 import merrittwan.cs3200.rowmap.StudyClinicianRowMapper;
 
 /**
+ * Service to manage data in CLINICIAN table.
  * Created by olivi on 11/28/2017.
  */
 @Service
@@ -22,6 +23,11 @@ public class ClinicianServiceImpl implements ClinicianService {
   @Autowired
   private JdbcTemplate jdbcTemplate;
 
+  /**
+   * Get all clinicians in database.
+   *
+   * @return list of clinicians
+   */
   @Override
   public List<Clinician> getAllClinicians() {
     RowMapper<Clinician> rm = new ClinicianRowMapper();
@@ -30,6 +36,12 @@ public class ClinicianServiceImpl implements ClinicianService {
     return jdbcTemplate.query(sql, rs);
   }
 
+  /**
+   * Get all clinicians associated with a given study.
+   *
+   * @param studyId primary key of study to query on
+   * @return list of clinicians associated with the given study id
+   */
   @Override
   public List<StudyClinician> getCliniciansByStudy(int studyId) {
     RowMapper<StudyClinician> rm = new StudyClinicianRowMapper();

@@ -39,30 +39,55 @@ public class StudyController {
     studyService.addPatientToStudy(patient);
   }
 
+  /**
+   * Update the information for a given patient.
+   *
+   * @param patient patient object with modified values.
+   */
   @RequestMapping(value = "/patient", method = RequestMethod.PUT)
   @ResponseBody
   public void updatePatientInformation(@RequestBody Patient patient) {
     studyService.updatePatientInfo(patient);
   }
 
+  /**
+   * Add a given clinician to a study.
+   *
+   * @param studyClinician object containing study and clinician information.
+   */
   @RequestMapping(value = "/clinician", method = RequestMethod.POST)
   @ResponseBody
   public void addClinicianToStudy(@RequestBody StudyClinician studyClinician) {
     studyService.addClinicianToStudy(studyClinician);
   }
 
+  /**
+   * Add a principal investigator to the database.
+   *
+   * @param pi principal investigator object to add
+   */
   @RequestMapping(value = "/principalinvestigator", method = RequestMethod.POST)
   @ResponseBody
   public void addNewPrincipalInvestigator(@RequestBody PrincipalInvestigator pi) {
     studyService.addPrincipalInvestigator(pi);
   }
 
+  /**
+   * Create a new study.
+   *
+   * @param study object containing study information
+   */
   @RequestMapping(value = "/new", method = RequestMethod.POST)
   @ResponseBody
   public void createStudy(@RequestBody Study study) {
     studyService.createStudy(study);
   }
 
+  /**
+   * Close a study.
+   *
+   * @param studyId primary key of study to close.
+   */
   @RequestMapping(value = "/new", method = RequestMethod.PUT)
   @ResponseBody
   public void closeStudy(@RequestBody int studyId) {
@@ -83,6 +108,13 @@ public class StudyController {
     return studyService.getOutcomesByTreatmentType(studyId, placebo);
   }
 
+  /**
+   * Get a list of patients matching the given parameters for the given study.
+   *
+   * @param studyId         primary key of study to query on
+   * @param characteristics column names and values to query on
+   * @return list of patients matching the given parameters.
+   */
   @RequestMapping(value = "/characteristics", method = RequestMethod.POST)
   @ResponseBody
   public List<Patient> getOutcomesByPatientCharacteristics(@RequestParam(name = "studyId") int studyId,
@@ -90,6 +122,11 @@ public class StudyController {
     return studyService.getOutcomesByPatientCharacteristics(studyId, characteristics);
   }
 
+  /**
+   * Retrieve a list of all studies in the database.
+   *
+   * @return list of studies.
+   */
   @RequestMapping(value = "/all", method = RequestMethod.GET)
   @ResponseBody
   public Map<String, Object> getAllStudies() {

@@ -12,6 +12,7 @@ import merrittwan.cs3200.entity.MedicalCondition;
 import merrittwan.cs3200.rowmap.MedicalConditionRowMapper;
 
 /**
+ * Service to manage data in MEDICAL_CONDITION table.
  * Created by olivi on 11/28/2017.
  */
 @Service
@@ -20,6 +21,11 @@ public class MedicalConditionServiceImpl implements MedicalConditionService {
   @Autowired
   private JdbcTemplate jdbcTemplate;
 
+  /**
+   * Get all medical conditions in database.
+   *
+   * @return list of medical conditions
+   */
   @Override
   public List<MedicalCondition> getAllMedicalConditions() {
     RowMapper<MedicalCondition> rm = new MedicalConditionRowMapper();

@@ -83,6 +83,11 @@ public class StudyServiceImpl implements StudyService {
     }
   }
 
+  /**
+   * Update the information for a given patient.
+   *
+   * @param patient patient object with modified values.
+   */
   @Override
   public void updatePatientInfo(Patient patient) {
     DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
@@ -109,6 +114,11 @@ public class StudyServiceImpl implements StudyService {
     }
   }
 
+  /**
+   * Add a given clinician to a study.
+   *
+   * @param studyClinician object containing study and clinician information.
+   */
   @Override
   public void addClinicianToStudy(StudyClinician studyClinician) {
     DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
@@ -133,6 +143,11 @@ public class StudyServiceImpl implements StudyService {
     }
   }
 
+  /**
+   * Add a principal investigator to the database.
+   *
+   * @param pi principal investigator object to add
+   */
   @Override
   public void addPrincipalInvestigator(PrincipalInvestigator pi) {
     DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
@@ -158,6 +173,11 @@ public class StudyServiceImpl implements StudyService {
     }
   }
 
+  /**
+   * Create a new study.
+   *
+   * @param study object containing study information
+   */
   @Override
   public void createStudy(Study study) {
     DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
@@ -176,12 +196,6 @@ public class StudyServiceImpl implements StudyService {
       platformTransactionManager.rollback(status);
       throw e;
     }
-  }
-
-  @Override
-  public void closeStudy(int studyId) {
-    String sql = "UPDATE STUDY SET COMPLETED = TRUE WHERE STUDY_ID = ?";
-    jdbcTemplate.update(sql, studyId);
   }
 
   private int insertStudy(Study study) {
@@ -234,6 +248,17 @@ public class StudyServiceImpl implements StudyService {
   }
 
   /**
+   * Close a study.
+   *
+   * @param studyId primary key of study to close.
+   */
+  @Override
+  public void closeStudy(int studyId) {
+    String sql = "UPDATE STUDY SET COMPLETED = TRUE WHERE STUDY_ID = ?";
+    jdbcTemplate.update(sql, studyId);
+  }
+
+  /**
    * Retrieve the patient outcomes for a study by the treatment type.
    *
    * @param studyId study to retrieve outcomes for
@@ -253,6 +278,13 @@ public class StudyServiceImpl implements StudyService {
             new SqlParameter(Types.TINYINT)));
   }
 
+  /**
+   * Get a list of patients matching the given parameters for the given study.
+   *
+   * @param studyId         primary key of study to query on
+   * @param characteristics column names and values to query on
+   * @return list of patients matching the given parameters.
+   */
   @Override
   public List<Patient> getOutcomesByPatientCharacteristics(int studyId,
                                                            Map<String, Object> characteristics) {
@@ -284,6 +316,11 @@ public class StudyServiceImpl implements StudyService {
     return jdbcTemplate.query(psc, rs);
   }
 
+  /**
+   * Retrieve a list of all studies in the database.
+   *
+   * @return list of studies.
+   */
   @Override
   public Map<String, Object> getAllStudies() {
     CallableStatementCreator csc = con -> con.prepareCall("{ call get_all_studies() }");
