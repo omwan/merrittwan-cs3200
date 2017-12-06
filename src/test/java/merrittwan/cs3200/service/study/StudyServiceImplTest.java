@@ -325,25 +325,32 @@ public class StudyServiceImplTest {
   }
 
   /**
-   * Asserts that the resultset returned by the jdbcTemplate matches the resultset
-   * returned by the service.
+   * Asserts that the service to retrieve patient outcomes by characteristics calls
+   * the appropriate jdbcTemplate method with the appropriate parameters.
    */
   @Test
   public void testGetOutcomesByTreatmentType() throws Exception {
-    final Map<String, Object> expected = new HashMap<>();
+    final List<Patient> expected = new ArrayList<>();
+    final Patient patient = createMockedPatient();
+    expected.add(patient);
+
+    final int studyId = 1;
+    final boolean placebo = true;
 
     new Expectations() {{
-      jdbcTemplate.call((CallableStatementCreator) any, (List<SqlParameter>) any);
+      jdbcTemplate.query(anyString, new Object[] {studyId, placebo},
+              (RowMapperResultSetExtractor<?>) any);
       returns(expected);
     }};
 
-    Map<String, Object> actual = studyService.getOutcomesByTreatmentType(1, true);
-    assertEquals(actual, expected);
+    List<Patient> actual = studyService.getOutcomesByTreatmentType(studyId, placebo);
+    assertEquals(1, actual.size());
+    assertEquals(actual.get(0), patient);
   }
 
   /**
    * Asserts that the service to retrieve patient outcomes by characteristics calls
-   * the appropriate jdbcTemplate method.
+   * the appropriate jdbcTemplate method with the appropriate parameters.
    */
   @Test
   public void testGetOutcomesByPatientCharacteristics() throws Exception {

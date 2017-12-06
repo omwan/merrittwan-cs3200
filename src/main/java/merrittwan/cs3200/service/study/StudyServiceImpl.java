@@ -266,16 +266,14 @@ public class StudyServiceImpl implements StudyService {
    * @return resultset containing patient outcomes matching the given parameters.
    */
   @Override
-  public Map<String, Object> getOutcomesByTreatmentType(int studyId, boolean placebo) {
-    CallableStatementCreator csc = con -> {
-      CallableStatement cs = con.prepareCall("{ call search_outcomes_by_treatment_type(?, ?) }");
-      cs.setInt(1, studyId);
-      cs.setBoolean(2, placebo);
-      return cs;
-    };
+  public List<Patient> getOutcomesByTreatmentType(int studyId, boolean placebo) {
+    String sql = "SELECT * FROM PATIENT JOIN ADDRESS ON PATIENT.ADDRESS_ID = ADDRESS.ADDRESS_ID " +
+            "WHERE STUDY_ID = ? AND PLACEBO = ?";
 
-    return jdbcTemplate.call(csc, Arrays.asList(new SqlParameter(Types.INTEGER),
-            new SqlParameter(Types.TINYINT)));
+    RowMapper<Patient> rm = new PatientRowMapper();
+    RowMapperResultSetExtractor<Patient> rs =  new RowMapperResultSetExtractor<>(rm);
+
+    return jdbcTemplate.query(sql, new Object[] {studyId, placebo}, rs);
   }
 
   /**
@@ -291,9 +289,11 @@ public class StudyServiceImpl implements StudyService {
     String sql = "SELECT * FROM PATIENT JOIN ADDRESS ON PATIENT.ADDRESS_ID = ADDRESS.ADDRESS_ID" +
             " WHERE STUDY_ID = ?";
 
+    List<String> params = new ArrayList<>();
     for (String s : characteristics.keySet()) {
-      if (characteristics.get(s) != null) {
+      if (characteristics.get(s) != null && characteristics.get(s) != "") {
         sql += " AND " + s + " = ?";
+        params.add(s);
       }
     }
 
@@ -302,9 +302,8 @@ public class StudyServiceImpl implements StudyService {
       PreparedStatement ps = con.prepareStatement(finalSql);
       ps.setInt(1, studyId);
 
-      List<String> keys = new ArrayList<>(characteristics.keySet());
-      for (int i = 0; i < characteristics.keySet().size(); i++) {
-        ps.setObject(i + 2, characteristics.get(keys.get(i)));
+      for (int i = 0; i < params.size(); i++) {
+        ps.setObject(i + 2, characteristics.get(params.get(i)));
       }
 
       return ps;

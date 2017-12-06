@@ -61,9 +61,9 @@ public interface StudyService {
    *
    * @param studyId study to retrieve outcomes for
    * @param placebo treatment type (either placebo or drug)
-   * @return resultset containing patient outcomes matching the given parameters.
+   * @return list of patients matching the given parameters.
    */
-  Map<String, Object> getOutcomesByTreatmentType(int studyId, boolean placebo);
+  List<Patient> getOutcomesByTreatmentType(int studyId, boolean placebo);
 
   /**
    * Get a list of patients matching the given parameters for the given study.

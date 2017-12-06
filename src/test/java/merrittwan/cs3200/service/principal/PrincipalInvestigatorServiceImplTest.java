@@ -14,7 +14,7 @@ import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Tested;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Created by olivi on 12/04/2017.

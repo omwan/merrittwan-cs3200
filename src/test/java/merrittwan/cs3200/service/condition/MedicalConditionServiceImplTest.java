@@ -13,7 +13,7 @@ import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Tested;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Class to test methods from service for medical conditions.
