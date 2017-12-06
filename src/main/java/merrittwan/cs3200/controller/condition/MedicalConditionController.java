@@ -12,6 +12,7 @@ import merrittwan.cs3200.entity.MedicalCondition;
 import merrittwan.cs3200.service.condition.MedicalConditionService;
 
 /**
+ * Controller for API endpoints for medical conditions.
  * Created by olivi on 11/28/2017.
  */
 @Controller
@@ -21,6 +22,11 @@ public class MedicalConditionController {
   @Autowired
   private MedicalConditionService medicalConditionService;
 
+  /**
+   * Get all medical conditions in database.
+   *
+   * @return list of medical conditions
+   */
   @RequestMapping(value = "/all", method = RequestMethod.GET)
   @ResponseBody
   public List<MedicalCondition> getAllMedicalConditions() {

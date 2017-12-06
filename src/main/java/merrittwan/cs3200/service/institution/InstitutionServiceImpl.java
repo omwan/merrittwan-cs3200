@@ -12,6 +12,7 @@ import merrittwan.cs3200.entity.Institution;
 import merrittwan.cs3200.rowmap.InstitutionRowMapper;
 
 /**
+ * Services to manage data in INSTITUTION table.
  * Created by olivi on 11/29/2017.
  */
 @Service
@@ -20,6 +21,10 @@ public class InstitutionServiceImpl implements InstitutionService {
   @Autowired
   private JdbcTemplate jdbcTemplate;
 
+  /**
+   * Get all institutions in database.
+   * @return list of institutions.
+   */
   @Override
   public List<Institution> getAllInstitutions() {
     RowMapper<Institution> rm = new InstitutionRowMapper();

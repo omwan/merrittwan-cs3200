@@ -12,6 +12,7 @@ import merrittwan.cs3200.entity.Patient;
 import merrittwan.cs3200.rowmap.PatientRowMapper;
 
 /**
+ * Service to manage data in PATIENT table.
  * Created by olivi on 11/30/2017.
  */
 @Service
@@ -20,6 +21,11 @@ public class PatientServiceImpl implements PatientService {
   @Autowired
   private JdbcTemplate jdbcTemplate;
 
+  /**
+   * Get all patients in database.
+   *
+   * @return list of patients
+   */
   @Override
   public List<Patient> getAllPatients() {
     RowMapper<Patient> rm = new PatientRowMapper();
@@ -29,6 +35,12 @@ public class PatientServiceImpl implements PatientService {
     return jdbcTemplate.query(sql, rs);
   }
 
+  /**
+   * Get all patients associated with a given study.
+   *
+   * @param studyId primary key of study to query on
+   * @return list of patients matching the given study id
+   */
   @Override
   public List<Patient> getPatientsByStudy(int studyId) {
     RowMapper<Patient> rm = new PatientRowMapper();
