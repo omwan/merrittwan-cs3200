@@ -5,6 +5,8 @@ import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.CallableStatementCreator;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.RowMapperResultSetExtractor;
 import org.springframework.jdbc.core.SqlParameter;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Service;
@@ -33,6 +35,7 @@ import merrittwan.cs3200.entity.PrincipalInvestigator;
 import merrittwan.cs3200.entity.Study;
 import merrittwan.cs3200.entity.StudyClinician;
 import merrittwan.cs3200.entity.StudyDrug;
+import merrittwan.cs3200.rowmap.PatientRowMapper;
 
 /**
  * Implementation of service to perform operations on database relating to studies.
@@ -80,6 +83,11 @@ public class StudyServiceImpl implements StudyService {
     }
   }
 
+  /**
+   * Update the information for a given patient.
+   *
+   * @param patient patient object with modified values.
+   */
   @Override
   public void updatePatientInfo(Patient patient) {
     DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
@@ -106,6 +114,11 @@ public class StudyServiceImpl implements StudyService {
     }
   }
 
+  /**
+   * Add a given clinician to a study.
+   *
+   * @param studyClinician object containing study and clinician information.
+   */
   @Override
   public void addClinicianToStudy(StudyClinician studyClinician) {
     DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
@@ -130,6 +143,11 @@ public class StudyServiceImpl implements StudyService {
     }
   }
 
+  /**
+   * Add a principal investigator to the database.
+   *
+   * @param pi principal investigator object to add
+   */
   @Override
   public void addPrincipalInvestigator(PrincipalInvestigator pi) {
     DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
@@ -155,6 +173,11 @@ public class StudyServiceImpl implements StudyService {
     }
   }
 
+  /**
+   * Create a new study.
+   *
+   * @param study object containing study information
+   */
   @Override
   public void createStudy(Study study) {
     DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
@@ -173,12 +196,6 @@ public class StudyServiceImpl implements StudyService {
       platformTransactionManager.rollback(status);
       throw e;
     }
-  }
-
-  @Override
-  public void closeStudy(int studyId) {
-    String sql = "UPDATE STUDY SET COMPLETED = TRUE WHERE STUDY_ID = ?";
-    jdbcTemplate.update(sql, studyId);
   }
 
   private int insertStudy(Study study) {
@@ -231,6 +248,17 @@ public class StudyServiceImpl implements StudyService {
   }
 
   /**
+   * Close a study.
+   *
+   * @param studyId primary key of study to close.
+   */
+  @Override
+  public void closeStudy(int studyId) {
+    String sql = "UPDATE STUDY SET COMPLETED = TRUE WHERE STUDY_ID = ?";
+    jdbcTemplate.update(sql, studyId);
+  }
+
+  /**
    * Retrieve the patient outcomes for a study by the treatment type.
    *
    * @param studyId study to retrieve outcomes for
@@ -238,18 +266,60 @@ public class StudyServiceImpl implements StudyService {
    * @return resultset containing patient outcomes matching the given parameters.
    */
   @Override
-  public Map<String, Object> getOutcomesByTreatmentType(int studyId, boolean placebo) {
-    CallableStatementCreator csc = con -> {
-      CallableStatement cs = con.prepareCall("{ call search_outcomes_by_treatment_type(?, ?) }");
-      cs.setInt(1, studyId);
-      cs.setBoolean(2, placebo);
-      return cs;
-    };
+  public List<Patient> getOutcomesByTreatmentType(int studyId, boolean placebo) {
+    String sql = "SELECT * FROM PATIENT JOIN ADDRESS ON PATIENT.ADDRESS_ID = ADDRESS.ADDRESS_ID " +
+            "WHERE STUDY_ID = ? AND PLACEBO = ?";
 
-    return jdbcTemplate.call(csc, Arrays.asList(new SqlParameter(Types.INTEGER),
-            new SqlParameter(Types.TINYINT)));
+    RowMapper<Patient> rm = new PatientRowMapper();
+    RowMapperResultSetExtractor<Patient> rs =  new RowMapperResultSetExtractor<>(rm);
+
+    return jdbcTemplate.query(sql, new Object[] {studyId, placebo}, rs);
   }
 
+  /**
+   * Get a list of patients matching the given parameters for the given study.
+   *
+   * @param studyId         primary key of study to query on
+   * @param characteristics column names and values to query on
+   * @return list of patients matching the given parameters.
+   */
+  @Override
+  public List<Patient> getOutcomesByPatientCharacteristics(int studyId,
+                                                           Map<String, Object> characteristics) {
+    String sql = "SELECT * FROM PATIENT JOIN ADDRESS ON PATIENT.ADDRESS_ID = ADDRESS.ADDRESS_ID" +
+            " WHERE STUDY_ID = ?";
+
+    List<String> params = new ArrayList<>();
+    for (String s : characteristics.keySet()) {
+      if (characteristics.get(s) != null && characteristics.get(s) != "") {
+        sql += " AND " + s + " = ?";
+        params.add(s);
+      }
+    }
+
+    String finalSql = sql;
+    PreparedStatementCreator psc = con -> {
+      PreparedStatement ps = con.prepareStatement(finalSql);
+      ps.setInt(1, studyId);
+
+      for (int i = 0; i < params.size(); i++) {
+        ps.setObject(i + 2, characteristics.get(params.get(i)));
+      }
+
+      return ps;
+    };
+
+    RowMapper<Patient> rm = new PatientRowMapper();
+    RowMapperResultSetExtractor<Patient> rs =  new RowMapperResultSetExtractor<>(rm);
+
+    return jdbcTemplate.query(psc, rs);
+  }
+
+  /**
+   * Retrieve a list of all studies in the database.
+   *
+   * @return list of studies.
+   */
   @Override
   public Map<String, Object> getAllStudies() {
     CallableStatementCreator csc = con -> con.prepareCall("{ call get_all_studies() }");

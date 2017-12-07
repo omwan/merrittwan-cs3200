@@ -13,6 +13,7 @@ import merrittwan.cs3200.entity.Institution;
 import merrittwan.cs3200.service.institution.InstitutionService;
 
 /**
+ * Controller for API endpoints for institutions.
  * Created by olivi on 11/29/2017.
  */
 @Controller
@@ -23,6 +24,10 @@ public class InstitutionController {
   @Autowired
   private InstitutionService institutionService;
 
+  /**
+   * Get all institutions in database.
+   * @return list of institutions.
+   */
   @RequestMapping(value = "/all", method = RequestMethod.GET)
   @ResponseBody
   public List<Institution> getAllInstitutions() {

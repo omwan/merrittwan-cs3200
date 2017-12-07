@@ -17,9 +17,11 @@ import mockit.Tested;
 import static org.junit.Assert.assertEquals;
 
 /**
+ * Class to test methods from service for clinicians.
  * Created by olivi on 11/28/2017.
  */
 public class ClinicianServiceImplTest {
+
   @Tested
   private ClinicianService clinicianService;
 
@@ -38,8 +40,8 @@ public class ClinicianServiceImplTest {
   @Test
   public void testGetAllClinicians() throws Exception {
     final List<Clinician> expected = new ArrayList<>();
-    final Clinician drug = createMockedClinician();
-    expected.add(drug);
+    final Clinician clinician = createMockedClinician();
+    expected.add(clinician);
 
     new Expectations() {{
       jdbcTemplate.query(anyString, (RowMapperResultSetExtractor<?>) any);
@@ -58,8 +60,8 @@ public class ClinicianServiceImplTest {
   @Test
   public void testGetCliniciansByStudy() throws Exception {
     final List<StudyClinician> expected = new ArrayList<>();
-    final Clinician drug = createMockedClinician();
-    final StudyClinician studyClinician = createMockedStudyClinician(drug);
+    final Clinician clinician = createMockedClinician();
+    final StudyClinician studyClinician = createMockedStudyClinician(clinician);
     expected.add(studyClinician);
 
     final int studyId = 1;
@@ -71,8 +73,8 @@ public class ClinicianServiceImplTest {
 
     List<StudyClinician> actual = clinicianService.getCliniciansByStudy(studyId);
     assertEquals(1, actual.size());
-    assertEquals(actual.get(0), expected.get(0));
-    assertEquals(actual.get(0).getClinician(), expected.get(0).getClinician());
+    assertEquals(actual.get(0), studyClinician);
+    assertEquals(actual.get(0).getClinician(), studyClinician.getClinician());
   }
 
   /**

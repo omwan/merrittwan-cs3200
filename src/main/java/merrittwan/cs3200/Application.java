@@ -16,6 +16,16 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @ComponentScan("merrittwan.cs3200")
 public class Application {
 
+  @Bean
+  public WebMvcConfigurerAdapter corsConfigurer() {
+    return new WebMvcConfigurerAdapter() {
+      @Override
+      public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/api/**");
+      }
+    };
+  }
+
   public static void main(String[] args) {
     SpringApplication.run(Application.class, args);
   }

@@ -34,6 +34,36 @@ public class DrugServiceImplTest {
   }
 
   /**
+   * Assert that service to add a drug calls the appropriate jdbcTemplate method with
+   * the values from the given drug.
+   */
+  @Test
+  public void testAddDrug() throws Exception {
+    final Drug drug = createMockedDrug();
+    new Expectations() {{
+      jdbcTemplate.update(anyString, drug.getMarketName(), drug.getScientificName(),
+              drug.getToxicity(), drug.getPreviousSuccess());
+    }};
+
+    drugService.addNewDrug(drug);
+  }
+
+  /**
+   * Assert that service to delete a drug calls the appropriate jdbcTemplate method with
+   * the given drug primary key.
+   */
+  @Test
+  public void testDeleteDrug() throws Exception {
+    final int drugId = 1;
+
+    new Expectations() {{
+      jdbcTemplate.update(anyString, drugId);
+    }};
+
+    drugService.deleteDrug(drugId);
+  }
+
+  /**
    * Assert that the list of drugs returned by the service matches the values returned
    * from the query.
    */
