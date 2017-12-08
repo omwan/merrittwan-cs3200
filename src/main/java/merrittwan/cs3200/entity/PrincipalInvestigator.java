@@ -21,7 +21,7 @@ public class PrincipalInvestigator {
 
   private Address address;
 
-  private Institution institution;
+  private int institutionId;
 
   public PrincipalInvestigator() {
 
@@ -75,11 +75,11 @@ public class PrincipalInvestigator {
     this.address = address;
   }
 
-  public Institution getInstitution() {
-    return institution;
+  public int getInstitutionId() {
+    return institutionId;
   }
 
-  public void setInstitution(Institution institution) {
-    this.institution = institution;
+  public void setInstitutionId(int institutionId) {
+    this.institutionId = institutionId;
   }
 }

@@ -3,6 +3,7 @@ package merrittwan.cs3200.service.study;
 import java.util.List;
 import java.util.Map;
 
+import merrittwan.cs3200.entity.Institution;
 import merrittwan.cs3200.entity.Patient;
 import merrittwan.cs3200.entity.PrincipalInvestigator;
 import merrittwan.cs3200.entity.Study;
@@ -41,6 +42,13 @@ public interface StudyService {
    * @param pi principal investigator object to add
    */
   void addPrincipalInvestigator(PrincipalInvestigator pi);
+
+  /**
+   * Add an institution to the database.
+   *
+   * @param institution institution object to add
+   */
+  void addInstitution(Institution institution);
 
   /**
    * Create a new study.

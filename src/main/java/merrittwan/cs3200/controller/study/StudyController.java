@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.List;
 import java.util.Map;
 
+import merrittwan.cs3200.entity.Institution;
 import merrittwan.cs3200.entity.Patient;
 import merrittwan.cs3200.entity.PrincipalInvestigator;
 import merrittwan.cs3200.entity.Study;
@@ -72,6 +73,17 @@ public class StudyController {
   @ResponseBody
   public void addNewPrincipalInvestigator(@RequestBody PrincipalInvestigator pi) {
     studyService.addPrincipalInvestigator(pi);
+  }
+
+  /**
+   * Add an institution to the database.
+   *
+   * @param institution institution object to add
+   */
+  @RequestMapping(value = "/institution", method = RequestMethod.POST)
+  @ResponseBody
+  public void addNewInstitution(@RequestBody Institution institution) {
+    studyService.addInstitution(institution);
   }
 
   /**

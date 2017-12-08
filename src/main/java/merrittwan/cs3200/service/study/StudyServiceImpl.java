@@ -157,13 +157,41 @@ public class StudyServiceImpl implements StudyService {
 
     try {
       int addressId = getAddressId(pi.getAddress());
-      int institutionId = getInstitutionId(pi.getInstitution());
+      int institutionId = pi.getInstitutionId();
 
       String sql = "INSERT INTO PRINCIPAL_INVESTIGATOR (FIRST_NAME, LAST_NAME, PHONE, EMAIL, " +
               "ADDRESS_ID, INSTITUTION_ID) VALUES (?, ?, ?, ?, ?, ?)";
 
       jdbcTemplate.update(sql, pi.getFirstName(), pi.getLastName(), pi.getPhone(),
               pi.getEmail(), addressId, institutionId);
+
+      platformTransactionManager.commit(status);
+    } catch (Exception e) {
+      e.printStackTrace();
+      platformTransactionManager.rollback(status);
+      throw e;
+    }
+  }
+
+  /**
+   * Add an institution to the database.
+   *
+   * @param institution institution object to add
+   */
+  @Override
+  public void addInstitution(Institution institution) {
+    DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
+    definition.setName("add institution");
+    definition.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+    TransactionStatus status = platformTransactionManager.getTransaction(definition);
+
+    try {
+      int addressId = getAddressId(institution.getAddress());
+
+      String sql = "INSERT INTO INSTITUTION (INSTITUTION_NAME, INSTITUTION_TYPE, ADDRESS_ID) " +
+              "VALUES (?, ?, ?)";
+
+      jdbcTemplate.update(sql, institution.getName(), institution.getType().toString(), addressId);
 
       platformTransactionManager.commit(status);
     } catch (Exception e) {
@@ -345,27 +373,6 @@ public class StudyServiceImpl implements StudyService {
         ps.setString(2, address.getCity());
         ps.setString(3, address.getState());
         ps.setString(4, address.getZip());
-        return ps;
-      };
-
-      jdbcTemplate.update(psc, holder);
-      return holder.getKey().intValue();
-    }
-  }
-
-  private int getInstitutionId(Institution institution) {
-    if (institution.getInstitutionId() != null) {
-      return institution.getInstitutionId();
-    } else {
-      int addressId = getAddressId(institution.getAddress());
-      String sql = "INSERT INTO INSTITUTION (INSTITUTION_NAME, INSTITUTION_TYPE, ADDRESS_ID) " +
-              "VALUES (?, ?, ?)";
-      GeneratedKeyHolder holder = new GeneratedKeyHolder();
-      PreparedStatementCreator psc = con -> {
-        PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-        ps.setString(1, institution.getName());
-        ps.setString(2, institution.getType().toString());
-        ps.setInt(3, addressId);
         return ps;
       };
 
