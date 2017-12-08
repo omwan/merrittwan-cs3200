@@ -25,4 +25,11 @@ public interface MeasuredValueService {
    * @return list of recorded values for the given patient
    */
   List<ClinicianPatientMeasuredValue> getRecordedValuesForPatient(int patientId);
+
+  /**
+   * Get all measured values in the database.
+   *
+   * @return list of measured values
+   */
+  List<MeasuredValue> getAllMeasuredValues();
 }

@@ -118,6 +118,26 @@ public class MeasuredValueServiceImplTest {
     assertEquals(actual.get(0).getPatientId(), patientId);
   }
 
+  /**
+   * Assert that the list of measured values returned by the service matches the values
+   * returned from the query.
+   */
+  @Test
+  public void testGetMeasuredValues() throws Exception {
+    final List<MeasuredValue> expected = new ArrayList<>();
+    final MeasuredValue measuredValue = createMockedMeasuredValue();
+    expected.add(measuredValue);
+
+    new Expectations() {{
+      jdbcTemplate.query(anyString, (RowMapperResultSetExtractor<?>) any);
+      returns(expected);
+    }};
+
+    List<MeasuredValue> actual = measuredValueService.getAllMeasuredValues();
+    assertEquals(actual.size(), expected.size());
+    assertEquals(actual.get(0), measuredValue);
+  }
+
   private ClinicianPatientMeasuredValue createMockedClinicianPatientMeasuredValue(int patientId) {
     ClinicianPatientMeasuredValue measuredValue = new ClinicianPatientMeasuredValue();
     measuredValue.setClinicianId(1);
@@ -125,6 +145,16 @@ public class MeasuredValueServiceImplTest {
     measuredValue.setValueMeasure(1);
     measuredValue.setMeasuredValue(new MeasuredValue());
     measuredValue.setPatientId(patientId);
+    return measuredValue;
+  }
+
+  private MeasuredValue createMockedMeasuredValue() {
+    MeasuredValue measuredValue = new MeasuredValue();
+    measuredValue.setValueName("value");
+    measuredValue.setValueDescription("description");
+    measuredValue.setValueUnit("mL");
+    measuredValue.setMinHealthyAmount(0);
+    measuredValue.setMinHealthyAmount(100);
     return measuredValue;
   }
 

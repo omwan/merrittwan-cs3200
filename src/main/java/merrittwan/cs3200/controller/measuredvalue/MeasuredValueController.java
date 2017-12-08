@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.List;
 
 import merrittwan.cs3200.entity.ClinicianPatientMeasuredValue;
+import merrittwan.cs3200.entity.MeasuredValue;
 import merrittwan.cs3200.service.measuredvalue.MeasuredValueService;
 
 /**
@@ -46,5 +47,16 @@ public class MeasuredValueController {
   public List<ClinicianPatientMeasuredValue> getRecordedValuesForPatient(
           @RequestParam(name = "patientId") int patientId) {
     return measuredValueService.getRecordedValuesForPatient(patientId);
+  }
+
+  /**
+   * Get all measured values in the database.
+   *
+   * @return list of measured values
+   */
+  @RequestMapping(value = "/all", method = RequestMethod.GET)
+  @ResponseBody
+  public List<MeasuredValue> getAllMeasuredValues() {
+    return measuredValueService.getAllMeasuredValues();
   }
 }

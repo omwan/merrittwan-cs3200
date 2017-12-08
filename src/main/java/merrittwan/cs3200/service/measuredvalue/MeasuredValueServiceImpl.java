@@ -19,6 +19,7 @@ import java.util.List;
 import merrittwan.cs3200.entity.ClinicianPatientMeasuredValue;
 import merrittwan.cs3200.entity.MeasuredValue;
 import merrittwan.cs3200.rowmap.ClinicianPatientMeasuredValueRowMapper;
+import merrittwan.cs3200.rowmap.MeasuredValueRowMapper;
 
 /**
  * Service to manage data in MEASURED_VALUE table.
@@ -78,6 +79,19 @@ public class MeasuredValueServiceImpl implements MeasuredValueService {
             "MEASURED_VALUE.MEASURED_VALUE_ID = CLINICIAN_PATIENT_MEASURED_VALUE.MEASURED_VALUE_ID " +
             "WHERE PATIENT_ID = ? ORDER BY MEASURED_DATE";
     return jdbcTemplate.query(sql, new Object[] {patientId}, rs);
+  }
+
+  /**
+   * Get all measured values in the database.
+   *
+   * @return list of measured values
+   */
+  @Override
+  public List<MeasuredValue> getAllMeasuredValues() {
+    RowMapper<MeasuredValue> rm = new MeasuredValueRowMapper();
+    RowMapperResultSetExtractor<MeasuredValue> rs = new RowMapperResultSetExtractor<>(rm);
+    String sql = "SELECT * FROM MEASURED_VALUE";
+    return jdbcTemplate.query(sql, rs);
   }
 
   private int getMeasuredValueId(MeasuredValue measuredValue) {
