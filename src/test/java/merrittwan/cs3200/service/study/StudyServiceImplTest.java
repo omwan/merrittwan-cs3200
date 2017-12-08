@@ -217,14 +217,13 @@ public class StudyServiceImplTest {
   public void testAddPrincipalInvestigator() throws Exception {
     final PrincipalInvestigator pi = createMockedPrincipalInvestigator();
     mockGetAddressId();
-    mockGetInstitutionId();
 
     new Expectations() {{
       platformTransactionManager.getTransaction((DefaultTransactionDefinition) any);
       returns(transactionStatus);
 
       jdbcTemplate.update(anyString, pi.getFirstName(), pi.getLastName(), pi.getPhone(),
-              pi.getEmail(), 1, 1);
+              pi.getEmail(), 1, pi.getInstitutionId());
 
       platformTransactionManager.commit(transactionStatus);
     }};
@@ -239,7 +238,6 @@ public class StudyServiceImplTest {
   public void testAddPrincipalInvestigatorInsertionError() throws Exception {
     final PrincipalInvestigator pi = createMockedPrincipalInvestigator();
     mockGetAddressId();
-    mockGetInstitutionId();
     final Exception e = new Exception("error in insertion");
 
     new Expectations() {{
@@ -247,7 +245,7 @@ public class StudyServiceImplTest {
       returns(transactionStatus);
 
       jdbcTemplate.update(anyString, pi.getFirstName(), pi.getLastName(), pi.getPhone(),
-              pi.getEmail(), 1, 1);
+              pi.getEmail(), 1, pi.getInstitutionId());
       result = e;
 
       platformTransactionManager.rollback(transactionStatus);
@@ -257,6 +255,53 @@ public class StudyServiceImplTest {
     } catch (Exception ex) {
       assertEquals(e, ex);
     }
+  }
+
+  /**
+   * Assert that adding an institution to the database calls the appropriate jdbcTemplate methods,
+   * and that a commit is made.
+   */
+  @Test
+  public void testAddInstitution() throws Exception {
+    final Institution institution = createMockedInstitution();
+    mockGetAddressId();
+    final Exception e = new Exception("error in insertion");
+
+    new Expectations() {{
+      platformTransactionManager.getTransaction((DefaultTransactionDefinition) any);
+      returns(transactionStatus);
+
+      jdbcTemplate.update(anyString, institution.getName(), institution.getType().toString(), 1);
+      result = e;
+
+      platformTransactionManager.rollback(transactionStatus);
+    }};
+
+    try {
+      studyService.addInstitution(institution);
+    } catch (Exception ex) {
+      assertEquals(e, ex);
+    }
+  }
+
+  /**
+   * Asserts that if an insert throws an exception, the transaction is rolled back.
+   */
+  @Test
+  public void testAddInstitutionInsertionError() throws Exception {
+    final Institution institution = createMockedInstitution();
+    mockGetAddressId();
+
+    new Expectations() {{
+      platformTransactionManager.getTransaction((DefaultTransactionDefinition) any);
+      returns(transactionStatus);
+
+      jdbcTemplate.update(anyString, institution.getName(), institution.getType().toString(), 1);
+
+      platformTransactionManager.commit(transactionStatus);
+    }};
+
+    studyService.addInstitution(institution);
   }
 
   /**
@@ -338,7 +383,7 @@ public class StudyServiceImplTest {
     final boolean placebo = true;
 
     new Expectations() {{
-      jdbcTemplate.query(anyString, new Object[] {studyId, placebo},
+      jdbcTemplate.query(anyString, new Object[]{studyId, placebo},
               (RowMapperResultSetExtractor<?>) any);
       returns(expected);
     }};
@@ -483,6 +528,13 @@ public class StudyServiceImplTest {
     pi.setPrincipalInvestigatorId(1);
     study.setPrincipalInvestigator(pi);
     return study;
+  }
+
+  private Institution createMockedInstitution() {
+    Institution institution = new Institution();
+    institution.setName("institution name");
+    institution.setType(Institution.InstitutionType.HOSPITAL);
+    return institution;
   }
 
 }
