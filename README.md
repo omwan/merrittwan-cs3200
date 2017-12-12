@@ -1,6 +1,6 @@
 # Clinical Trial Database - Backend [![Build Status](https://travis-ci.org/omwan/merrittwan-cs3200.svg?branch=master)](https://travis-ci.org/omwan/merrittwan-cs3200)
 
-Backend component of Final Project for CS3200, Fall 2016. Built in collaboration with [Jessica Merritt](https://github.com/jessm16). Frontend component can be found [here](https://github.com/jessm16/wanmerritt-cs3200ui), and web application itself is accessible [here](https://wanmerritt-cs3200ui.herokuapp.com/).
+Backend component of final project for CS3200 (Database Design), Fall 2016. Built in collaboration with [Jessica Merritt](https://github.com/jessm16). Frontend component can be found [here](https://github.com/jessm16/wanmerritt-cs3200ui).
 
 This repo consists of a REST API built on Spring Boot, which queries the AWS RDB using JDBC. 
 
