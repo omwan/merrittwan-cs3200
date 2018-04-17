@@ -2,7 +2,7 @@
 
 Backend component of final project for CS3200 (Database Design), Fall 2017. Built in collaboration with [Jessica Merritt](https://github.com/jessm16). Frontend component can be found [here](https://github.com/jessm16/wanmerritt-cs3200ui). 
 
-This repo consists of a REST API built on Spring Boot, which queries the AWS RDB using JDBC. 
+This repo consists of a REST API built on Spring Boot, which queries an AWS RDS using JDBC. 
 
 ## About this project
 This project consists of a web application which queries on a database that models a system for storing and recording information pertaining to clinical trials, including principal investigators, patients, drugs, and medical conditions. Users can view and create studies for a given medical condition and set of drugs, add patients and clinicians to studies, and record information about patient responses.
@@ -17,7 +17,7 @@ Front end is hosted on heroku [here](https://wanmerritt-cs3200ui.herokuapp.com/)
 - Spring Boot
 - JDBC MySQL connector
 - Heroku
-- AWS RDB
+- AWS RDS
 - Travis CI
 
 ## ER diagram of database
